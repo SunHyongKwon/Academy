@@ -1,0 +1,5 @@
+package com.semi.scheduler.config;
+
+public class DataSourceConfig {
+
+}

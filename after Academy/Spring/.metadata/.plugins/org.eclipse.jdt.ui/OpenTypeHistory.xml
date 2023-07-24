@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<typeInfoHistroy>
+    <typeInfo handle="=demo/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.demo.service{UserService.java[UserService" modifiers="513" timestamp="1672974861000"/>
+    <typeInfo handle="=demo/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.demo.dao{UserDao.java[UserDao" modifiers="513" timestamp="1672138752000"/>
+    <typeInfo handle="=demo/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.demo.service{PostService.java[PostService" modifiers="513" timestamp="1672155647000"/>
+    <typeInfo handle="=demo/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.demo.dao{PostDao.java[PostDao" modifiers="513" timestamp="1672156846000"/>
+</typeInfoHistroy>

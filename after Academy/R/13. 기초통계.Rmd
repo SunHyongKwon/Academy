@@ -1,0 +1,91 @@
+# 기초 통계량
+
+## [1] 다이어트 약이 정말로 효과가 있는지 어떻게 판단을 할 수 있을까?
+
+```{r}
+# 밀가루로 만든 약
+flour <- c(3,-2,-1,0,1,-2)
+
+# 다이어트 약
+diet <- c(-4,1,-3,-5,-2,-8)
+```
+
+```{r}
+total <- c(flour,diet)
+total
+```
+
+```{r}
+summary(total)
+```
+
+```{r}
+barplot(table(total))
+
+par(new =T)
+
+hist(total,
+     col = rgb(1,0,0,0.1)
+     )
+```
+
+```{r}
+boxplot(total,
+        horizontal = T
+        )
+```
+
+```{r}
+boxplot(flour,diet)
+```
+
+```{r}
+cor(flour,diet)
+```
+
+# 기초 통계량 산출
+
+## [2] 커피가게 메뉴 추천
+
+```{r}
+cafe <- read.csv("./Data/coffee.csv")
+cafe
+```
+
+```{r}
+hist(cafe$Coffee)
+hist(cafe$Fruit.Cup)
+```
+
+```{r}
+boxplot(cafe$Coffee,cafe$Fruit.Cup,
+        horizontal = T
+        )
+```
+
+### 범위 빈도수 구하는 방법
+
+```{r}
+coffee_range <- seq(0,60,10)
+cut(cafe$Coffee, breaks = coffee_range)
+table(cut(cafe$Coffee, breaks = coffee_range,right = F))
+```
+
+### 줄기잎 그래프
+
+```{r}
+# 몬지 찾아보자
+stem(cafe$Coffee)
+```
+
+### 변동계수 구하기 ( 빈도수를 구해보기 위해서 )
+
+```{r}
+sd(cafe$Coffee) / mean(cafe$Coffee)
+sd(cafe$Fruit.Cup) / mean(cafe$Fruit.Cup)
+```
+
+```{r}
+sort(cafe$Fruit.Cup)
+sort(cafe$Coffee)
+```

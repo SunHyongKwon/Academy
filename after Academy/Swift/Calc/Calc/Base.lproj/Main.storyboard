@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Calc" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="구구단 출력" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hb8-3d-L31">
+                                <rect key="frame" x="16" y="182" width="361" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vdr-cD-9iq">
+                                <rect key="frame" x="79" y="265.33333333333331" width="32" height="35.666666666666686"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                            </textField>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xvd-y9-CYi">
+                                <rect key="frame" x="231" y="266" width="75" height="34.333333333333314"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYT-st-fo6">
+                                        <rect key="frame" x="0.0" y="0.0" width="75" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="Button"/>
+                                        <connections>
+                                            <action selector="btnDan:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aKr-5q-ldE"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="JbT-pV-9s9">
+                                <rect key="frame" x="79" y="351" width="235" height="246"/>
+                                <color key="backgroundColor" systemColor="secondaryLabelColor"/>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="xvd-y9-CYi" secondAttribute="trailing" constant="87" id="2nZ-js-5zX"/>
+                            <constraint firstItem="vdr-cD-9iq" firstAttribute="leading" secondItem="JbT-pV-9s9" secondAttribute="leading" id="AqA-4k-HCh"/>
+                            <constraint firstItem="JbT-pV-9s9" firstAttribute="top" secondItem="vdr-cD-9iq" secondAttribute="bottom" constant="50.000000000000057" id="Hgp-oo-77B"/>
+                            <constraint firstItem="Hb8-3d-L31" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="KbM-XO-hZo"/>
+                            <constraint firstItem="vdr-cD-9iq" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="79" id="NVr-nA-umN"/>
+                            <constraint firstItem="vdr-cD-9iq" firstAttribute="centerY" secondItem="xvd-y9-CYi" secondAttribute="centerY" id="Oi2-Gp-8fm"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="JbT-pV-9s9" secondAttribute="bottom" constant="221" id="S2W-Na-paI"/>
+                            <constraint firstItem="Hb8-3d-L31" firstAttribute="centerX" secondItem="JbT-pV-9s9" secondAttribute="centerX" id="Thx-d8-lHY"/>
+                            <constraint firstItem="Hb8-3d-L31" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="123" id="Ydk-sd-skZ"/>
+                            <constraint firstItem="xvd-y9-CYi" firstAttribute="top" secondItem="Hb8-3d-L31" secondAttribute="bottom" constant="48" id="anX-8H-Qng"/>
+                            <constraint firstItem="vdr-cD-9iq" firstAttribute="top" secondItem="Hb8-3d-L31" secondAttribute="bottom" constant="47.333333333333258" id="bER-fQ-aPZ"/>
+                            <constraint firstItem="Hb8-3d-L31" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="mHE-11-TWe"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tfDan" destination="vdr-cD-9iq" id="KmS-lO-qte"/>
+                        <outlet property="tvResult" destination="JbT-pV-9s9" id="r60-TF-Sn9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="46.564885496183201" y="-27.464788732394368"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

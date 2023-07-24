@@ -1,0 +1,455 @@
+# 타이타닉 데이터를 활용한 승선자의 생사 여부 예측
+
+## 파일 불러오기
+
+```{r}
+titanic <- read.csv("./Data/Titanic_train.csv")
+titanic
+```
+
+## EDA(Exploray Data Analysis) : 탐색적 데이터 분석
+
+-   column 분석
+
++-------------+--------------------------------+
+| Column명    | 설명                           |
++=============+================================+
+| PassengerId | 승객 아이디                    |
++-------------+--------------------------------+
+| Survived    | 생존 여부\                     |
+|             | 0 : 죽음\                      |
+|             | 1 : 생존                       |
++-------------+--------------------------------+
+| Pclass      | 승객 클래스\                   |
+|             | 1: First class\                |
+|             | 2: Second class\               |
+|             | 3: Third class                 |
++-------------+--------------------------------+
+| Name        | 승객 이름                      |
++-------------+--------------------------------+
+| **Sex**     | 성별 (female : 0 / male : 1)   |
++-------------+--------------------------------+
+| **Age**     | 나이                           |
++-------------+--------------------------------+
+| **SibSp**   | 형제 와 배우자 수              |
++-------------+--------------------------------+
+| Parch       | 부모와 아이 수                 |
++-------------+--------------------------------+
+| Ticket      | ticket number                  |
++-------------+--------------------------------+
+| Fare        | 승선 요금                      |
++-------------+--------------------------------+
+| Cabin       | 선실 번호                      |
++-------------+--------------------------------+
+| Embarked    | 승선 장소\                     |
+|             | C = Cherbourg( 쉘부르 )\       |
+|             | Q = Queenstown ( 퀸즈타운 )\   |
+|             | S = Southampton ( 사우스햄튼 ) |
++-------------+--------------------------------+
+
+-   범주형 column에 맞게 들어있는지 확인
+
+```{r}
+# Survived , Pclass , Sex , Embarked
+sort(unique(titanic$Survived))
+sort(unique(titanic$Pclass))
+sort(unique(titanic$Sex))
+sort(unique(titanic$Embarked))
+```
+
+-   NA check
+
+    -   원래 방법
+
+```{r}
+for (i in 1:12) {
+  print(sum(is.na(titanic[,i])))
+}
+
+# age에만 NA 가 있다. 
+```
+
+-   좀더 쉬운방법
+
+```{r}
+colSums(is.na(titanic))
+```
+
+-   분석이 가능한지 확인하기
+
+```{r}
+177 / 891
+```
+
+-   survived 기준으로 정렬
+
+```{r}
+titanic$Survived <- factor(titanic$Survived, 
+												levels = c(0,1) , 
+												labels = c("death","alived")
+												)
+```
+
+```{r}
+library(dplyr)
+titanic<-arrange(titanic , Survived)
+head(titanic)
+```
+
+-   survived의 비율이 어떻게 되는지 확인해보자
+
+```{r}
+table(titanic$Survived)
+death<-round(table(titanic$Survived)[1] / sum(table(titanic$Survived)) * 100,2)
+alived<-round(table(titanic$Survived)[2] / sum(table(titanic$Survived)) * 100,2)
+
+death <- paste("사망","\n",death,"%",sep = "")
+alived <- paste("생존","\n",alived,"%",sep = "")
+```
+
+```{r}
+par(family = "AppleGothic")
+
+library(plotrix)
+
+pie3D(table(titanic$Survived),
+      main = "타이타닉호 생존율",
+      labels = c(death, alived),
+      labelcex = 0.9,
+      explode = 0.05
+      )
+```
+
+```{r}
+par(family = "AppleGothic")
+
+barplot(table(titanic$Survived),
+        col = c("red","blue"),
+        ylim = c(0,600),
+        xlab = "생존여부",
+        names = c("사망","생존"),
+        ylab = "인원수",
+        main = "타아타닉호 생존수와 사망수"
+        )
+
+text(c(0.7,1.9),table(titanic$Survived) + 20,
+     paste(table(titanic$Survived) ,"명", sep = "")
+     )
+```
+
+-   Survived 컬럼을 Target Column으로 설정하기
+
+```{r}
+head(titanic)
+```
+
+## Sex 분석
+
+```{r}
+str(titanic)
+```
+
+-   Feature column 구성을 위해 Sex 컬럼 분석
+
+    -   feature column은 특징이 있어야 되기 때문에 비율이 다를 수록 좋다.
+
+```{r}
+unique(titanic$Sex)
+titanic$Sex <- as.factor(titanic$Sex)
+```
+
+```{r}
+table(titanic$Sex)
+```
+
+-   여성과 남성의 생존 과 사망 인원수
+
+```{r}
+subset(titanic, Sex == "male")
+subset(titanic, Sex == "female")
+
+maleDeath <- table(subset(titanic, Sex == "male")$Survived)[1]
+maleSurvive <- table(subset(titanic, Sex == "male")$Survived)[2]
+femaleDeath <- table(subset(titanic, Sex == "female")$Survived)[1]
+femaleSurvive <- table(subset(titanic, Sex == "female")$Survived)[2]
+```
+
+-   성별 생존 비율
+
+```{r}
+malePer<-c(maleDeath / (maleDeath + maleSurvive) * 100,maleSurvive / (maleDeath + maleSurvive) * 100)
+femalePer <- c(femaleDeath / (femaleDeath + femaleSurvive) * 100, femaleSurvive / (femaleDeath + femaleSurvive) * 100)
+
+sexPer<-rbind(malePer,femalePer)
+rownames(sexPer) <- c("male","female")
+sexPer[1,]
+```
+
+-   그래프로 보여주기
+
+```{r}
+par(family = "AppleGothic")
+
+txt <- c("사망","생존")
+pie3D(sexPer[1,],
+      main = "타이타닉호 남성 생존율",
+      labels = paste(txt,"\n",round(sexPer[1,],2),"%",sep = ""),
+      labelcex = 0.9,
+      explode = 0.05
+      )
+pie3D(sexPer[2,],
+      main = "타이타닉호 여성 생존율",
+      labels = paste(txt,"\n",round(sexPer[2,],2),"%",sep = ""),
+      labelcex = 0.9,
+      explode = 0.05
+      )
+```
+
+```{r}
+par(family = "AppleGothic")
+barplot(table(titanic$Sex),
+        ylim = c(0,800),
+        main = "성별 승선 인원수",
+        names = c("여성","남성"),
+        ylab = "승선인원수",
+        col = c("red","blue")
+        )
+
+text(c(0.7,1.9),table(titanic$Sex) + 30,
+     paste(table(titanic$Sex),"명",sep = "")
+     )
+```
+
+## 티켓 등급 분석
+
+```{r}
+first <- subset(titanic, Pclass == 1)
+second <- subset(titanic, Pclass == 2)
+third<- subset(titanic, Pclass == 3)
+```
+
+-   1등 객실의 여성 생존율
+
+```{r}
+table(subset(first, Sex == "female")$Survived)
+```
+
+```{r}
+table(subset(first, Sex == "female")$Survived)[2]/sum(table(subset(first, Sex == "female")$Survived)) * 100
+```
+
+-   1,2,3등 객실의 여성 생존율을 for 문을 이용해 해결
+
+```{r}
+for (i in c("female","male")) {
+  for (j in 1:3) {
+      # female 객실 별
+      female_num <- sum(table (subset(titanic, (Pclass == j) &(Sex == i))$Survived))
+      
+      female_alive_num <- table(subset(titanic,(Pclass == j) &(Sex == i))$Survived)[2]
+      
+      female_per <- table(subset(titanic,(Pclass == j) &(Sex == i))$Survived)[2]/
+        sum(table (subset(titanic, (Pclass == j) &(Sex == i))$Survived)) * 100
+      
+      cat(paste(j,"등 객실의", ifelse(i == "female","여성","남성"),"생존률은",female_alive_num,"/",female_num,",",round(female_per,2),"%","\n"))
+      
+  }
+  cat("-------------------------------------\n")
+}
+
+```
+
+## Embarked와의 연관성 확인
+
+```{r}
+unique(titanic$Embarked)
+titanic <- factor(titanic$Embarked)
+subset(titanic,Embarked == "")
+subset(titanic, Fare == 80)
+table(titanic.train$Survived,titanic.train$Embarked)
+```
+
+```{r}
+titanic$Embarked[titanic$Embarked == ""] <- "S"
+```
+
+```{r}
+titanic$Embarked <- factor(titanic$Embarked)
+
+```
+
+```{r}
+table(titanic$Survived,titanic$Embarked)
+table(titanic$Sex,titanic$Embarked)
+table(titanic$Embarked)
+```
+
+```{r}
+par(family = "AppleGothic")
+
+barplot(table(titanic$Sex,titanic$Embarked),
+        beside = T,
+        col = c("red","blue"),
+        ylim = c(0,500),
+        xlab = "인원수",
+        ylab = "항구별 / 성별",
+        main = "항구별 성별 승선 인원"
+        )
+
+legend(1,450,
+       c("female","male"),
+       fill = c("red","blue")
+       )
+```
+
+```{r}
+
+par(mfrow = c(1,3), family = "AppleGothic")
+
+barplot(table(titanic$Sex,titanic$Survived,titanic$Embarked)[,,"C"],
+        beside = T,
+        legend.text = T,
+        col = c("red","blue"),
+        ylim = c(0,400),
+        xlab = "생사여부",
+        ylab = "항구별 / 성별",
+        main = "C 항구 성별 생존 인원"
+        )
+
+barplot(table(titanic$Sex,titanic$Survived,titanic$Embarked)[,,"Q"],
+        beside = T,
+        legend.text = T,
+        col = c("red","blue"),
+        ylim = c(0,400),
+        xlab = "생사여부",
+        ylab = "항구별 / 성별",
+        main = "Q 항구 성별 생존 인원"
+        )
+
+barplot(table(titanic$Sex,titanic$Survived,titanic$Embarked)[,,"S"],
+        beside = T,
+        legend.text = T,
+        col = c("red","blue"),
+        ylim = c(0,400),
+        xlab = "생사여부",
+        ylab = "항구별 / 성별",
+        main = "S 항구 성별 생존 인원"
+        )
+```
+
+```{r}
+table(titanic$Pclass,titanic$Embarked)
+```
+
+```{r}
+barplot(table(titanic$Pclass,titanic$Embarked),
+        beside = T,
+        ylim = c(0,500),
+        legend.text = T,
+        col = c("red","blue","yellow")
+        )
+```
+
+-   절반 이상의 승객이 Southampton에서 배를 탔으며 여기에서 탑승한 승객의 70%가 남성 이였으며 남성의 사망율이 여성보다 훨씬 높았으므로 Southampton의 사망률이 높게 나왔으며, Southampton에서 탑승한 승객의 60%이상의 3등급 객실을 사용했다. C 항구에서 탑승한 승객들은 1등 객실 비중 및 생존률이 높은 것으로 보아 이동네는 부자 동네이다.
+
+-   항구별 객실별 남녀별 생존 비율
+
+```{r}
+table(titanic$Survived,titanic$Sex,titanic$Pclass,titanic$Embarked)
+```
+
+## RandomForest로 예측 모델 생성
+
+```{r}
+train_df_T <- titanic
+```
+
+```{r}
+target_col <- c("Survived", "Sex", "Pclass", "Embarked")
+train_df_T[,target_col]
+```
+
+```{r}
+train_df_T$Sexcode[train_df_T$Sex == "male"] <- 0
+train_df_T$Sexcode[train_df_T$Sex == "female"] <- 1
+```
+
+```{r}
+train_df_T <- train_df_T[,-5]
+train_df_T
+```
+
+```{r}
+target_col <- c("Survived", "Sexcode", "Pclass", "Embarked")
+train_df_T[,target_col]
+```
+
+```{r}
+train_df_T$Embarked_C = train_df_T$Embarked == "C"
+train_df_T$Embarked_S = train_df_T$Embarked == "S"
+train_df_T$Embarked_Q = train_df_T$Embarked == "Q"
+```
+
+```{r}
+# 2,3 ,12,13,14,15
+train_df_T <- train_df_T[,c(2,3,12,13,14,15)]
+train_df_T
+```
+
+```{r}
+library(randomForest)
+```
+
+```{r}
+library(caret)
+
+set.seed(1234)
+
+samp <- createDataPartition(train_df_T$Survived, p = 0.7 , list = F)
+data.train <- train_df_T[samp,]
+data.test <- train_df_T[-samp,]
+
+```
+
+```{r}
+x <- subset(data.test , select = -Survived)
+y <- data.test$Survived
+```
+
+```{r}
+titanic.rf <- randomForest(Survived ~ . ,data.train , ntree = 100)
+pred <- predict(titanic.rf , x)
+head(pred)
+```
+
+```{r}
+library(nnet)
+
+model.nnet <- nnet(Survived ~ . , data=data.train , size = 3)
+pred.nnet <- predict(model.nnet , x , type = "class")
+```
+
+```{r}
+library(e1071)
+
+model.svm <- svm(Survived ~ . , data = data.train)
+pred.svm <- predict(model.svm , x)
+```
+
+```{r}
+mean(pred == y) * 100
+# 죽은 사람은 잘 맞추는데 , 산 사람은 반 밖에 못맞춘다. 
+table(pred, y)
+
+mean(pred.svm == y) * 100
+# 죽은 사람은 잘 맞추는데 , 산 사람은 반 밖에 못맞춘다. 
+table(pred.svm, y)
+
+mean(pred.nnet == y) * 100
+# 죽은 사람은 잘 맞추는데 , 산 사람은 반 밖에 못맞춘다. 
+table(pred.nnet, y)
+```
+
+# 1. Survived 와 Death의 비중을 동일하게 하여 예측력 구해보기
+
+# 

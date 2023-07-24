@@ -1,0 +1,72 @@
+-   데이터 정제가 가장 중요하다.
+
+-   데이터에 따라서 어떤 종료의 인공지능을 사용할지를 결정할지도 중요하다.
+
+    -   여태까지 배운 머신러닝 종류
+
+        -   인공신경망
+
+        -   의사결정나무
+
+        -   RandomForest
+
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
+
+# 의사결정 나무 (Decision Tree)
+
+: 스무고개 알고리즘 이라 생각하면 됨
+
+```{r}
+# decision tree package 설치 및 불러오기
+install.packages("party")
+library(party)
+```
+
+# Sampling 쉽게 할 수 있는 방법
+
+-   pacakge 설치 및 불러오기
+
+```{r}
+install.packages("caret")
+library(caret)
+```
+
+-   sampling 하기
+
+```{r}
+# 수업시 똑같은 랜덤 번호 얻기 위해서 실무에서 사용 X
+set.seed(1234)
+
+# sampling 하는 function 
+samp<-createDataPartition(iris$Species , p = 0.7 , list = F)
+```
+
+```{r}
+data.train <- iris[samp,]
+data.test <- iris[-samp,]
+```
+
+-   시험 문제와 답안지 만들기
+
+```{r}
+x <- data.test[,-5]
+y <- data.test[,5]
+```
+
+-   학습시키기
+
+```{r}
+iris_tree <- ctree(Species ~ . , data = data.train)
+```
+
+-   시험 보기
+
+```{r}
+pred <- predict(iris_tree , x )
+head(pred)
+```
+
+```{r}
+mean(pred == y) * 100
+table( pred , y )
+```

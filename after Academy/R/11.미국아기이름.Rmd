@@ -1,0 +1,74 @@
+```{r}
+library(stringr)
+library(dplyr)
+library(plotrix)
+```
+
+# 1880-2014 까지의 미국의 아기이름 데이터셋
+
+```{r}
+baby<-read.csv("./Data/R_Baby_Names_1880-2014.csv")
+head(baby)
+tail(baby)
+sum(is.na(baby))
+```
+
+```{r}
+baby$Year = substr(baby$Year,7,10)
+
+baby$Year = as.numeric(baby$Year)
+head(baby)
+```
+
+저장하여 파일 크기 비교하기
+
+```{r}
+write.csv(baby,"./Data/baby_name.csv",row.names = F)
+nrow(baby)
+```
+
+# 1번. baby에서 여자 아이만 Female이라는 Dataset 만들고, row 수 구하기
+
+```{r}
+table(baby$Gender)
+
+baby_female<-subset(baby,Gender == "F")
+nrow(baby_female)
+```
+
+# 2번. 여자 아이 이름 별로 계산
+
+```{r}
+arrange(aggregate(Count~Name,baby_female,sum), desc (Count),desc(Name))[c(1,length(unique(baby_female$Name))),]
+```
+
+# 3번.인구분포 현황 그래프
+
+```{r}
+par(family="AppleGothic")
+
+pop_dist_by_year<-aggregate(Count~Gender+Year,baby,sum)
+pop_dist_by_year_male<-subset(pop_dist_by_year,Gender == "M")
+pop_dist_by_year_female<-subset(pop_dist_by_year,Gender == "F")
+pop_dist_by_year_female
+pop_dist_by_year_male
+
+plot(pop_dist_by_year_male$Count ~ pop_dist_by_year_male$Year,
+     type = "l",
+     col = "blue",
+     xlab = "Year",
+     ylab = "Count",
+     main = "1880 ~ 2014년 인구분포 현황",
+     ylim = c(0,2.5*10^6),
+     cex.axis = 0.5
+     )
+
+lines(pop_dist_by_year_female$Count~pop_dist_by_year_female$Year,
+      col= "orange"
+      )
+
+legend(1980, 10^6,
+       c("Female","Male"),
+       fill = c("orange","blue")
+       )
+```

@@ -1,0 +1,609 @@
+```{r}
+library(stringr)
+library(dplyr)
+library(plotrix)
+```
+
+# 정제한 데이터 확인 하기
+
+## 데이터 불러오기
+
+```{r}
+# 상권 생활인구 관련
+commer_pop_daily <- read.csv("./Data/commer_pop_daily.csv")
+commer_pop_time <- read.csv("./Data/commer_pop_time.csv")
+commer_pop_age <- read.csv("./Data/commer_pop_age.csv")
+commer_pop_gen <- read.csv("./Data/commer_pop_gen.csv")
+
+# 상권 매출 관련
+commer_sales_daily <- read.csv("./Data/comm_sales_daily.csv")
+commer_sales_time <- read.csv("./Data/comm_sales_time.csv")
+commer_sales_age <- read.csv("./Data/comm_sales_age.csv")
+commer_sales_gen <- read.csv("./Data/comm_sales_gen.csv")
+
+# 점포 수 관련
+commer_shop_num <- read.csv("./Data/commer_shop_num.csv")
+```
+
+# 주제. 서울시 상권 및 소비 성향 분석
+
+# [1] 유동인구 많은 Top5 상권 / 적은 Top5 상권
+
+```{r}
+# 인구수 합치기
+pop_by_name_year_div<-aggregate(인구수~상권명+년도+분기,commer_pop_gen,sum)
+
+# 전체 평균 구하기
+pop_by_name<-aggregate(인구수~상권명,pop_by_name_year_div,mean)
+
+pop_top5 <- arrange(pop_by_name,desc (인구수))[2:6,]
+pop_low5 <- arrange(pop_by_name,인구수)[2:6,]
+```
+
+```{r}
+par(family = "AppleGothic")
+
+pop_top5_mat<-as.matrix(t(pop_top5[,2]))
+colnames(pop_top5_mat) <- pop_top5[,1]
+
+pop_low5_mat<-as.matrix(t(pop_low5[,2]))
+colnames(pop_low5_mat) <- pop_low5[,1]
+
+pop_10_mat<-cbind(pop_top5_mat,pop_low5_mat)
+
+barplot(pop_10_mat,
+        ylim = c(0,3.5*10^6),
+        cex.names = 0.5,
+        col = ifelse(pop_10_mat >= 10^6, "blue","red"),
+        main = "17 ~ 21년 상권별평균 유동인구 TOP 5 , BOTTOM 5"
+        )
+```
+
+# [2] 상권별 매출 Top5 Bottom5
+
+```{r}
+# 새 데이터 프레임에 넣기
+commer_sales_total<- data.frame(commer_sales_gen[,1:4],apply(commer_sales_gen[,5:6], 1, sum))
+colnames(commer_sales_total) <-c("연도","분기","상권명","서비스명","매출액")
+sales_by_year_div_name<-aggregate(매출액~연도+분기+상권명,commer_sales_total,sum)
+sales_by_name<-aggregate(매출액~상권명,commer_sales_total,mean)
+
+sales_low5<-head(arrange(sales_by_name,매출액),5)
+sales_top5<-head(arrange(sales_by_name,desc (매출액)),5)
+```
+
+```{r}
+par(family = "AppleGothic")
+
+sales_top5_mat<-as.matrix(t(sales_top5[,2]/10000))
+colnames(sales_top5_mat) <- sales_top5[,1]
+
+sales_low5_mat<-as.matrix(t(sales_low5[,2]/10000))
+colnames(sales_low5_mat) <- substr(sales_low5[,1],1,10)
+
+sales_10_mat<-cbind(sales_top5_mat,sales_low5_mat)
+
+barplot(sales_10_mat,
+        ylim = c(0,max(sales_10_mat)+4*10^5),
+        cex.names = 0.7,
+        ylab = "매출단(만원)",
+        col = ifelse(sales_10_mat >= 10^6, "blue","red"),
+        main = "17 ~ 21년 상권별평균 매출 TOP 5 , BOTTOM 5"
+        )
+```
+
+# [3] 유동인구와 매출의 상관관계
+
+```{r}
+cor_pop_sales<-merge(pop_by_name,sales_by_name,by.x = "상권명",by.y = "상권명")
+
+cor(cor_pop_sales$인구수,cor_pop_sales$매출액)
+```
+
+# [4] 유동인구와 상권 중 음식점 매출의 상관관계
+
+```{r}
+#한식음식점 / 분식전문점 /호프-간이주점/커피-음료/육류판매/제과점/치킨전문점/일식음식점/양식음식점/패스트푸드점 요정도가 음식점 업종 명임
+
+food_sales_gen<-subset(commer_sales_gen,
+                       commer_sales_gen$서비스_업종_코드_명 == "한식음식점" | 
+                       commer_sales_gen$서비스_업종_코드_명 == "분식전문점" | 
+                       commer_sales_gen$서비스_업종_코드_명 == "호프-간이주점" | 
+                       commer_sales_gen$서비스_업종_코드_명 == "커피-음료" | 
+                       commer_sales_gen$서비스_업종_코드_명 == "제과점" | 
+                       commer_sales_gen$서비스_업종_코드_명 == "치킨전문점" | 
+                       commer_sales_gen$서비스_업종_코드_명 == "일식음식점" | 
+                       commer_sales_gen$서비스_업종_코드_명 == "양식음식점" | 
+                       commer_sales_gen$서비스_업종_코드_명 == "패스트푸드점" 
+                       )
+
+food_sales_total <- data.frame(food_sales_gen[,1:4], apply(food_sales_gen[,5:6], 1, sum))
+colnames(food_sales_total) <-c("연도","분기","상권명","서비스명","매출액")
+food_sales_by_year_div_name<-aggregate(매출액~연도+분기+상권명,food_sales_total,sum)
+food_sales_by_name<-aggregate(매출액~상권명,food_sales_total,mean)
+
+cor_pop_food_sales<-merge(pop_by_name,food_sales_by_name,by.x = "상권명",by.y = "상권명")
+
+cor(cor_pop_food_sales$인구수,cor_pop_food_sales$매출액)
+```
+
+# [5] 상권별 점포 개수 Top 5
+
+```{r}
+colnames(commer_shop_num) <- c("년도","분기","상권명","서비스명","점포수")
+
+shop_num_by_year_div_name<-aggregate(점포수~년도+분기+상권명,commer_shop_num,sum)
+shop_num_by_name<-aggregate(점포수~상권명,shop_num_by_year_div_name,mean)
+shop_num_top5 <-head(arrange(shop_num_by_name,desc (점포수)),5)
+```
+
+```{r}
+par(family="AppleGothic")
+
+shop_top5_mat<-as.matrix(t(shop_num_top5[,2]))
+colnames(shop_top5_mat) <- shop_num_top5[,1]
+barplot(shop_top5_mat,
+        col = "blue",
+        ylim = c(0,15000),
+        cex.names = 0.7,
+        ylab = "점포 수",
+        main = "17 ~ 21년 상권별평균 상가 수 TOP 5 "
+        )
+```
+
+# [6] Top5 점포수의 점포 카테고리별 개수
+
+```{r}
+#"동대문패션타운 관광특구" "명동 남대문 북창동 다동 무교동 관광특구" "종로·청계 관광특구"    "가산디지털단지""강남역" 
+commer_shop_num_category <- aggregate(점포수~상권명+서비스명,commer_shop_num,mean) 
+commer_shop_num_category$점포수 <- round(commer_shop_num_category$점포수)
+top5_shop_num_category<-subset(commer_shop_num_category,
+       상권명 == "동대문패션타운 관광특구"|
+       상권명 == "명동 남대문 북창동 다동 무교동 관광특구"|
+       상권명 == "종로·청계 관광특구"|
+       상권명 == "가산디지털단지"|
+       상권명 == "강남역"
+         )
+
+
+top5_shop_num_category<-arrange(top5_shop_num_category,상권명,desc (점포수))
+top1<-subset(top5_shop_num_category,상권명 == "동대문패션타운 관광특구")
+top1<-top1[1:3,]
+top2<-subset(top5_shop_num_category,상권명 == "명동 남대문 북창동 다동 무교동 관광특구")
+top2<-top2[1:3,]
+
+top3<-subset(top5_shop_num_category,상권명 == "종로·청계 관광특구")
+top3<-top3[1:3,]
+
+top4<-subset(top5_shop_num_category,상권명 == "가산디지털단지")
+top4<-top4[1:3,]
+
+top5<-subset(top5_shop_num_category,상권명 == "강남역")
+top5<-top5[1:3,]
+```
+
+```{r}
+par(family = "AppleGothic")
+
+top5_mat<-cbind(top1[,3],top2[,3],top3[,3],top4[,3],top5[,3])
+colnames(top5_mat)<-c("동대문패션타운","명동","종로·청계","가산디지털단지","강남역")
+rownames(top5_mat)<-c("top1","top2","top3")
+barplot(top5_mat,
+        beside = T,
+        ylim = c(0,12000),
+        col = c("blue","red","green"),
+        legend.text = T,
+        main = "점포 수 TOP 5 의 카테고리별 TOP 3",
+        ylab = "점포 수"
+        )
+```
+
+# [7] 점포 개수와 매출 / 유동인구 간의 상관관계
+
+```{r}
+cor_pop_sales<-merge(shop_num_by_name,sales_by_name,by.x = "상권명",by.y = "상권명")
+
+cor(cor_pop_sales$점포수,cor_pop_sales$매출액)
+
+cor_pop_sales<-merge(shop_num_by_name,pop_by_name,by.x = "상권명",by.y = "상권명")
+
+cor(cor_pop_sales$점포수,cor_pop_sales$인구수)
+```
+
+# [8] 서울시 연도별 가장 매출이 많은 분야
+
+```{r}
+sales_total_by_year_cate<-aggregate(매출액 ~ 서비스명+연도,commer_sales_total,sum)
+sales_2017<-arrange(subset(sales_total_by_year_cate,연도 == "2017"),desc (매출액))
+sales_2018<-arrange(subset(sales_total_by_year_cate,연도 == "2018"),desc (매출액))
+sales_2019<-arrange(subset(sales_total_by_year_cate,연도 == "2019"),desc (매출액))
+sales_2020<-arrange(subset(sales_total_by_year_cate,연도 == "2020"),desc (매출액))
+sales_2021<-arrange(subset(sales_total_by_year_cate,연도 == "2021"),desc (매출액))
+
+
+# 억 단위로 나누기
+sales_2017$매출액 = sales_2017$매출액 / 10^9
+sales_2018$매출액 = sales_2018$매출액 / 10^9
+sales_2019$매출액 = sales_2019$매출액 / 10^9
+sales_2020$매출액 = sales_2020$매출액 / 10^9
+sales_2021$매출액 = sales_2021$매출액 / 10^9
+
+
+```
+
+```{r}
+sales_top5 <- cbind(sales_2017[1:3,3],sales_2018[1:3,3],sales_2019[1:3,3],sales_2020[1:3,3],sales_2021[1:3,3])
+
+colnames(sales_top5)<-2017:2021
+rownames(sales_top5)<- c("TOP1","TOP2","TOP3")
+
+par(family = "AppleGothic")
+
+barplot(sales_top5,
+        beside = T,
+        ylim = c(0,12000),
+        ylab = "매출액(단위 : 억)",
+        col = c("red","blue","green"),
+        main = "연도별 TOP3 매출 카테고리"
+        )
+
+legend(17,12000,
+       c("TOP1","TOP2","TOP3"),
+       fill = c("red","blue","green"),
+       )
+```
+
+# [9] 서울시 한식음식점의 매출이 가장 많은 요일
+
+```{r}
+
+arrange(aggregate(매출액~상권명,subset(commer_sales_total,서비스명 == "한식음식점"),mean),desc (매출액))[1:5,1]
+
+
+sales_korean<-subset(commer_sales_daily,서비스_업종_코드_명 == "한식음식점")
+
+sales_korean_by_name<-subset(sales_korean,
+       상권_코드_명 == "강남역" | 
+       상권_코드_명 == "명동 남대문 북창동 다동 무교동 관광특구" | 
+       상권_코드_명 == "종로·청계 관광특구" | 
+       상권_코드_명 == "노원역" | 
+       상권_코드_명 == "종각역" 
+      )
+
+colnames(sales_korean_by_name) <- c("year","div","name","service","mon","tue","wed","thur","fri","sat","sun")
+one<-as.vector(t(round(aggregate(cbind(mon,tue,wed,thur,fri,sat,sun)~name,sales_korean_by_name,mean)[1,2:8]/10^8)))
+two<-as.vector(t(round(aggregate(cbind(mon,tue,wed,thur,fri,sat,sun)~name,sales_korean_by_name,mean)[2,2:8]/10^8)))
+three<-as.vector(t(round(aggregate(cbind(mon,tue,wed,thur,fri,sat,sun)~name,sales_korean_by_name,mean)[3,2:8]/10^8)))
+four<-as.vector(t(round(aggregate(cbind(mon,tue,wed,thur,fri,sat,sun)~name,sales_korean_by_name,mean)[4,2:8]/10^8)))
+five<-as.vector(t(round(aggregate(cbind(mon,tue,wed,thur,fri,sat,sun)~name,sales_korean_by_name,mean)[5,2:8]/10^8)))
+```
+
+```{r}
+par(family = "AppleGothic")
+
+plot(one,
+     type = "o",
+     col= ifelse(one == max(one),"red","skyblue"),
+     ylim = c(0,120),
+     axes = F,
+     ann = F,
+     pch = ifelse(one == max(one),19,1),
+     cex = ifelse(one == max(one),2,1)
+     )
+
+
+axis(1, # 1이 x축을 말함
+     at = 1:7, #몇번부터 몇번까지 있는지
+     lab  = c("월요일","화요일","수요일","목요일","금요일","토요일","일요일"), #label에 들어갈 요소
+     cex.axis = 0.8 # label 사이즈
+     )
+
+axis(2,
+     ylim = c(30,120)
+     )
+# main
+title(main = "한식음식점의 요일별 매출액 TOP5 상권", 
+			)
+# x label
+title(xlab = "요일", 
+			)
+# y label 
+title(ylab = "매출액(단위 : 억원)", 
+			)
+
+lines(two,
+      type = "o",
+      col= ifelse(two == max(two),"red","orange"),
+      pch = ifelse(two == max(two),19,2),
+      cex = ifelse(two == max(two),2,1)
+      )
+lines(three,
+      type = "o",
+      col= ifelse(three == max(three),"red","purple"),
+      pch = ifelse(three == max(three),19,5),
+      cex = ifelse(three == max(three),2,1)
+      )
+lines(four,
+      type = "o",
+      col= ifelse(four == max(four),"red","brown"),
+      pch = ifelse(four == max(four),19,6),
+      cex = ifelse(four == max(four),2,1) 
+      )
+lines(five,
+      type = "o",
+      col= ifelse(five == max(five),"red","darkgray"),
+      pch = ifelse(five == max(five),19,23),
+      cex = ifelse(five == max(five),2,1)
+      )
+
+legend(6, 120,
+       c("강남역","노원역","명동","종각역","종로·청계"),
+			 cex = 0.8, # 크기 조절 1이 default 
+			 # plot 일시 추가 사항
+       col = c("skyblue","orange","purple","brown","darkgray"),
+       pch = c(1,2,5,6,23),
+       lty = rep(1,5)
+       )
+```
+
+# [10] 요 위 상권의 요일별 생활인구 수
+
+```{r}
+# 유동인구 강남역
+kangnam_pop_daily<-subset(commer_pop_daily,
+       상권명 == "서울 강남구 강남역_1" |
+       상권명 == "서울 강남구 강남역" |
+       상권명 == "서울 강남구 강남역_2" |
+       상권명 == "서울 서초구 강남역" 
+       )
+kangnam_pop_daily$상권명 = "강남역"
+kangnam_pop_daily <- aggregate(인구수~년도+분기+요일,kangnam_pop_daily,sum)
+kangnam_pop_daily_mean <-aggregate(인구수~요일,kangnam_pop_daily,mean)
+kangnam_pop_daily_mean$order = c(5,4,3,1,7,6,2)
+kangnam_pop_daily_mean<-arrange(kangnam_pop_daily_mean,order)
+
+# 유동인구 노원역
+nowon_pop_daily<-subset(commer_pop_daily,
+       상권명 == "서울 노원구 노원역_1" |
+       상권명 == "서울 노원구 노원역_2" |
+       상권명 == "서울 노원구 노원역_3" 
+       )
+
+nowon_pop_daily$상권명 = "노원역"
+nowon_pop_daily <- aggregate(인구수~년도+분기+요일,nowon_pop_daily,sum)
+nowon_pop_daily_mean <-aggregate(인구수~요일,nowon_pop_daily,mean)
+nowon_pop_daily_mean$order = c(5,4,3,1,7,6,2)
+nowon_pop_daily_mean<-arrange(nowon_pop_daily_mean,order)
+
+# 유동인구 명동
+myongdong_pop_daily<-subset(commer_pop_daily,
+       상권명 == "명동 남대문 북창동 다동 무교동 관광특구" 
+       )
+myongdong_pop_daily_mean<-aggregate(인구수~요일,myongdong_pop_daily,mean)
+myongdong_pop_daily_mean$order = c(5,4,3,1,7,6,2)
+myongdong_pop_daily_mean <- arrange(myongdong_pop_daily_mean,order)
+
+# 유동인구 종각
+jongak_pop_daily<-subset(commer_pop_daily,
+       상권명 == "종각역" |
+       상권명 == "종각역 젊음의 거리" 
+       )
+
+jongak_pop_daily$상권명 = "종각역"
+jongak_pop_daily <- aggregate(인구수~년도+분기+요일,jongak_pop_daily,sum)
+jongak_pop_daily_mean<-aggregate(인구수~요일,jongak_pop_daily,mean)
+jongak_pop_daily_mean$order = c(5,4,3,1,7,6,2)
+jongak_pop_daily_mean <- arrange(jongak_pop_daily_mean,order)
+
+# 유동인구 종로
+jongro_pop_daily<-subset(commer_pop_daily,
+       상권명 == "종로·청계 관광특구" 
+       )
+jongro_pop_daily_mean<-aggregate(인구수~요일,jongro_pop_daily,mean)
+jongro_pop_daily_mean$order = c(5,4,3,1,7,6,2)
+jongro_pop_daily_mean <- arrange(jongro_pop_daily_mean,order)
+```
+
+```{r}
+par(family = "AppleGothic")
+
+plot(kangnam_pop_daily_mean$인구수,
+     type = "o",
+     col= ifelse(kangnam_pop_daily_mean$인구수 == max(kangnam_pop_daily_mean$인구수),"red","skyblue"),
+     axes = F,
+     ann = F,
+     ylim = c(0,1.5*10^6),
+     pch = ifelse(kangnam_pop_daily_mean$인구수 == max(kangnam_pop_daily_mean$인구수),19,1),
+     cex = ifelse(kangnam_pop_daily_mean$인구수 == max(kangnam_pop_daily_mean$인구수),2,1)
+     )
+
+
+axis(1, # 1이 x축을 말함
+     at = 1:7, #몇번부터 몇번까지 있는지
+     lab  = c("월요일","화요일","수요일","목요일","금요일","토요일","일요일"), #label에 들어갈 요소
+     cex.axis = 0.8 # label 사이즈
+     )
+
+axis(2,
+     ylim = c(0,1.5*10^6)
+     )
+# main
+title(main = "한국음식점 매출 TOP 5 상권의 생활인구", 
+			)
+# x label
+title(xlab = "요일", 
+			)
+# y label 
+title(ylab = "생활인구 수(단위 : 명)", 
+			)
+
+lines(nowon_pop_daily_mean$인구수,
+      type = "o",
+      col= ifelse(nowon_pop_daily_mean$인구수 == max(nowon_pop_daily_mean$인구수),"red","orange"),
+      pch = ifelse(nowon_pop_daily_mean$인구수 == max(nowon_pop_daily_mean$인구수),19,2),
+      cex = ifelse(nowon_pop_daily_mean$인구수 == max(nowon_pop_daily_mean$인구수),2,1)
+      )
+lines(myongdong_pop_daily_mean$인구수,
+      type = "o",
+      col= ifelse(myongdong_pop_daily_mean$인구수 == max(myongdong_pop_daily_mean$인구수),"red","purple"),
+      pch = ifelse(myongdong_pop_daily_mean$인구수 == max(myongdong_pop_daily_mean$인구수),19,5),
+      cex = ifelse(myongdong_pop_daily_mean$인구수 == max(myongdong_pop_daily_mean$인구수),2,1)
+      )
+lines(jongak_pop_daily_mean$인구수,
+      type = "o",
+      col= ifelse(jongak_pop_daily_mean$인구수 == max(jongak_pop_daily_mean$인구수),"red","brown"),
+      pch = ifelse(jongak_pop_daily_mean$인구수 == max(jongak_pop_daily_mean$인구수),19,6),
+      cex = ifelse(jongak_pop_daily_mean$인구수 == max(jongak_pop_daily_mean$인구수),2,1) 
+      )
+lines(jongro_pop_daily_mean$인구수,
+      type = "o",
+      col= ifelse(jongro_pop_daily_mean$인구수 == max(jongro_pop_daily_mean$인구수),"red","darkgray"),
+      pch = ifelse(jongro_pop_daily_mean$인구수 == max(jongro_pop_daily_mean$인구수),19,23),
+      cex = ifelse(jongro_pop_daily_mean$인구수 == max(jongro_pop_daily_mean$인구수),2,1)
+      )
+
+legend(6, 1.5*10^6,
+       c("강남역","노원역","명동","종각역","종로·청계"),
+			 cex = 0.8, # 크기 조절 1이 default 
+			 # plot 일시 추가 사항
+       col = c("skyblue","orange","purple","brown","darkgray"),
+       pch = c(1,2,5,6,23),
+       lty = rep(1,5)
+       )
+```
+
+# [11] 연령대별 소비 분야(분기 평균)
+
+```{r}
+sales_by_cate_year_div<-aggregate(cbind(연령대_10_매출_금액,연령대_20_매출_금액,연령대_30_매출_금액,연령대_40_매출_금액,연령대_50_매출_금액,연령대_60_이상_매출_금액)~서비스_업종_코드_명+기준_년_코드+기준_분기_코드,commer_sales_age,sum)
+
+sales_by_cate_mean<-aggregate(cbind(연령대_10_매출_금액,연령대_20_매출_금액,연령대_30_매출_금액,연령대_40_매출_금액,연령대_50_매출_금액,연령대_60_이상_매출_금액)~서비스_업종_코드_명,sales_by_cate_year_div,mean)
+
+age_10_top5<-arrange(sales_by_cate_mean[,c(1,2)],desc (연령대_10_매출_금액))[1:5,]
+age_20_top5<-arrange(sales_by_cate_mean[,c(1,3)],desc (연령대_20_매출_금액))[1:5,]
+age_30_top5<-arrange(sales_by_cate_mean[,c(1,4)],desc (연령대_30_매출_금액))[1:5,]
+age_40_top5<-arrange(sales_by_cate_mean[,c(1,5)],desc (연령대_40_매출_금액))[1:5,]
+age_50_top5<-arrange(sales_by_cate_mean[,c(1,6)],desc (연령대_50_매출_금액))[1:5,]
+age_60_top5<-arrange(sales_by_cate_mean[,c(1,7)],desc (연령대_60_이상_매출_금액))[1:5,]
+```
+
+```{r}
+age_top5_sales<-cbind(round(age_10_top5[1:5,2]/10^8),round(age_20_top5[1:5,2]/10^8),round(age_30_top5[1:5,2]/10^8),round(age_40_top5[1:5,2]/10^8),round(age_50_top5[1:5,2]/10^8),round(age_60_top5[1:5,2]/10^8))
+
+colnames(age_top5_sales)<-c("10대","20대","30대","40대","50대","60대")
+rownames(age_top5_sales)<-c("TOP1","TOP2","TOP3","TOP4","TOP5")
+```
+
+```{r}
+par(family = "AppleGothic")
+
+barplot(age_top5_sales,
+        beside = T,
+        col = rainbow(5),
+        ylim = c(0,6500),
+        main = "연령대별 TOP5 소비 분야",
+        ylab = "매출액 (단위 : 억원)",
+        las = 0
+        )
+
+legend(32,6000,
+       c("TOP1","TOP2","TOP3","TOP4","TOP5"),
+       cex = 0.8,
+       fill = rainbow(5)
+       )
+```
+
+# [12] 연도별 매출 변화
+
+```{r}
+par(family= "AppleGothic")
+
+
+
+plot(aggregate(매출액~연도,commer_sales_total,sum)$매출액/10^12~aggregate(매출액~연도,commer_sales_total,sum)$연도,
+     type = "o",
+     ylab = "매출액 (단위 : 조원)",
+     xlab = "연도",
+     col = "blue",
+     ylim = c(75,95),
+     main = "연도별 매출 총액"
+     )
+```
+
+# [13] 시간대별 매출액
+
+```{r}
+colnames(commer_sales_time)<-c("년도","분기","상권명","서비스명","time1","time2","time3","time4","time5","time6")
+sales_time_by_year<-aggregate(cbind(time1,time2,time3,time4,time5,time6)~년도,
+          commer_sales_time,
+          sum
+          )
+
+# 조 단위
+sales_time_2017<-as.vector(t(sales_time_by_year[1,2:7]))/10^12
+sales_time_2018<-as.vector(t(sales_time_by_year[2,2:7]))/10^12
+sales_time_2019<-as.vector(t(sales_time_by_year[3,2:7]))/10^12
+sales_time_2020<-as.vector(t(sales_time_by_year[4,2:7]))/10^12
+sales_time_2021<-as.vector(t(sales_time_by_year[5,2:7]))/10^12
+```
+
+```{r}
+par(family = "AppleGothic")
+plot(sales_time_2017,
+    type = "o",
+    col= "skyblue",
+    ylim = c(0,50),
+    axes = F,
+    ann = F
+    )
+
+axis(1, # 1이 x축을 말함
+     at = 1:6, #몇번부터 몇번까지 있는지
+     lab  = c("06시","11시","14시","17시","21시","24시"), #label에 들어갈 요소
+     cex.axis = 0.8 # label 사이즈
+     )
+
+axis(2,
+     ylim = c(0,50)
+     )
+# main
+title(main = "2017년 - 2021년 시간대별 매출총액"
+			)
+# x label
+title(xlab = "시간대별"
+			)
+# y label 
+title(ylab = "매출액(단위 : 조원)"
+			)
+
+lines(sales_time_2018,
+      type = "o",
+      col= "orange",
+      pch = 2,
+      )
+lines(sales_time_2019,
+      type = "o",
+      col= "purple",
+      pch = 5,
+      )
+lines(sales_time_2020,
+      type = "o",
+      col= "brown",
+      pch = 6,
+      )
+lines(sales_time_2021,
+      type = "o",
+      col= "darkgray",
+      pch = 23,
+      )
+
+
+legend(5.2, 50,
+       c("2017년","2018년","2019년","2020년","2021년"),
+			 cex = 0.8, # 크기 조절 1이 default 
+			 # plot 일시 추가 사항
+       col = c("skyblue","orange","purple","brown","darkgray","yellow"),
+       pch = c(1,2,5,6,23),
+       lty = rep(1,5)
+       )
+```

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="220919/src"/>
+	<classpathentry kind="src" path="220920/src"/>
+	<classpathentry kind="src" path="220921/src"/>
+	<classpathentry kind="src" path="220922/src"/>
+	<classpathentry kind="src" path="Address/src"/>
+	<classpathentry kind="src" path="AddressInsert/src"/>
+	<classpathentry kind="src" path="Calculator/src"/>
+	<classpathentry kind="src" path="GUI_ex/src"/>
+	<classpathentry kind="src" path="GUI00/src"/>
+	<classpathentry kind="output" path="220919/bin"/>
+</classpath>
