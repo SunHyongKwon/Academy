@@ -1,0 +1,149 @@
+# 서울 열린 데이터광장(교통사고, 구별, 월별) 검색후 분석가능하게 정제하기
+
+## 파일 불러오기
+
+```{r}
+trafficAcc2<-read.csv("./Data/월별+교통사고+현황_20221202101449.csv")
+
+trafficAcc2
+```
+
+## 소계 열 없애기
+
+```{r}
+trafficAcc2<-trafficAcc2[-2,]
+trafficAcc2
+```
+
+## 첫번째 컬럼 없애기
+
+```{r}
+trafficAcc2<-trafficAcc2[,-1]
+trafficAcc2
+```
+
+## 컬럼수 확인하기 / rowname 초기화 하기
+
+```{r}
+(ncol(trafficAcc2) - 1) /3 
+rownames(trafficAcc2) <- c()
+head(trafficAcc2)
+
+612 / 36
+
+2005 + 16
+```
+
+## 컬럼 3개 씩 묶어서 이걸 밑으로 보내기 위해 하나 하기
+
+```{r}
+# 년도 / 월 / 자치구명 / 발생건수 / 사망자수 / 부상자수
+# 요렇게 할 거임
+test3<-data.frame(년도 = 2005 , 월 = 1 , 자치구명 = trafficAcc2[-1,1],
+           발생건수 = trafficAcc2[-1,2],
+           사망자수 = trafficAcc2[-1,3],
+           부상자수 = trafficAcc2[-1,4]
+          )
+
+test3
+```
+
+## 위에거를 for문 돌리기
+
+```{r}
+ncol(trafficAcc2) -1 
+month<-2
+year<-0
+
+for (i in seq(5,ncol(trafficAcc2),3)) {
+  test4<-data.frame(년도 = (2005 + year) , 월 = month , 자치구명 = trafficAcc2[-1,1],
+           발생건수 = trafficAcc2[-1,i],
+           사망자수 = trafficAcc2[-1,(i+1)],
+           부상자수 = trafficAcc2[-1,(i+2)]
+          )
+  test3<- rbind(test3, test4)
+               
+  if(month < 12){
+    month <- month + 1
+  }else if(month == 12){
+    month <- 1
+    year <- year + 1
+  }
+  
+}
+
+test3
+
+for (i in 2005:2023) {
+  print(nrow(subset(test,년도 == i)))
+}
+
+```
+
+## 분석 가능한 dataframe 만듦
+
+```{r}
+trafficAcc2 <- test3
+trafficAcc2
+```
+
+## - , 빼기
+
+```{r}
+library(stringr)
+
+for (i in 1:ncol(trafficAcc2)) {
+  trafficAcc2[,i] = str_replace_all(trafficAcc2[,i],",","")
+  trafficAcc2[,i] = str_replace_all(trafficAcc2[,i],"-","0")
+}
+
+trafficAcc2
+```
+
+## column type 바꾸기
+
+```{r}
+for (i in c(1,2,4,5,6)) {
+  trafficAcc2[,i] <- as.numeric(trafficAcc2[,i])
+}
+trafficAcc2
+```
+
+## 산점도 그려보기 / 교통사고 1과 비교하기
+
+```{r}
+exercise<- subset(trafficAcc2,년도 >= 2011 & 년도 <= 2019)
+
+plot(exercise$부상자수 ~ exercise$발생건수)
+plot(trafficAcc$부상자수 ~ trafficAcc$발생건수)
+```
+
+## 년도 별 구별 월별로 정렬하기
+
+```{r}
+trafficAcc2
+# 5100개
+test5<-
+
+for (name in unique(trafficAcc2$자치구명)) {
+  trafficAcc2<- rbind(trafficAcc2,subset(trafficAcc2,자치구명 == name))
+}
+
+tail(trafficAcc2)
+trafficAcc2<-trafficAcc2[-(1:5100),]
+trafficAcc2
+
+rownames(trafficAcc2)<-c()
+
+trafficAcc2<-arrange(trafficAcc2,년도)
+```
+
+## 2011 - 2019 까지 데이터 보기
+
+```{r}
+subset(trafficAcc2,년도 >= 2011 & 년도 <= 2019)
+trafficAcc
+
+# 똑같다
+setdiff(trafficAcc,subset(trafficAcc2,년도 >= 2011 & 년도 <= 2019))
+```

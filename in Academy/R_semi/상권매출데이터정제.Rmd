@@ -1,0 +1,91 @@
+# 상권 매출 데이터 가져오기
+
+```{r}
+comm_sales_2021 <- read.csv("./Data/서울시_우리마을가게_상권분석서비스(신_상권_추정매출)_2021년.csv", fileEncoding = "euc-kr")
+comm_sales_2020 <- read.csv("./Data/서울시_우리마을가게_상권분석서비스(신_상권_추정매출)_2020년.csv",fileEncoding = "euc-kr")
+comm_sales_2019 <- read.csv("./Data/서울시_우리마을가게_상권분석서비스(신_상권_추정매출)_2019년.csv",fileEncoding = "euc-kr")
+comm_sales_2018 <- read.csv("./Data/서울시_우리마을가게_상권분석서비스(신_상권_추정매출)_2018년.csv",fileEncoding = "euc-kr")
+comm_sales_2017 <- read.csv("./Data/서울시_우리마을가게_상권분석서비스(신_상권_추정매출)_2017년.csv",fileEncoding = "euc-kr")
+```
+
+# 어느 컬럼에 해당 되는지
+
+```{r}
+# 공통 부분 1 , 2 , 6 , 8
+# 요일별 36 ~ 42
+# 성별 49 , 50
+# 연령대별 51 ~ 56
+# 시간대별 43 ~ 48
+```
+
+# 요일별
+
+```{r}
+comm_sales_daily_2021 <- comm_sales_2021[,c(1,2,6,8,36:42)]
+comm_sales_daily_2020 <- comm_sales_2020[,c(1,2,6,8,36:42)]
+comm_sales_daily_2019 <- comm_sales_2019[,c(1,2,6,8,36:42)]
+comm_sales_daily_2018 <- comm_sales_2018[,c(1,2,6,8,36:42)]
+comm_sales_daily_2017 <- comm_sales_2017[,c(1,2,6,8,36:42)]
+```
+
+```{r}
+comm_sales_daily <- rbind(comm_sales_daily_2021,comm_sales_daily_2020,comm_sales_daily_2019,comm_sales_daily_2018,comm_sales_daily_2017)
+
+rownames(comm_sales_daily)<-c()
+
+write.csv(comm_sales_daily,"./Data/comm_sales_daily.csv",row.names = F)
+```
+
+# 성별
+
+```{r}
+comm_sales_gen_2021 <- comm_sales_2021[,c(1,2,6,8,49,50)]
+comm_sales_gen_2020 <- comm_sales_2020[,c(1,2,6,8,49,50)]
+comm_sales_gen_2019 <- comm_sales_2019[,c(1,2,6,8,49,50)]
+comm_sales_gen_2018 <- comm_sales_2018[,c(1,2,6,8,49,50)]
+comm_sales_gen_2017 <- comm_sales_2017[,c(1,2,6,8,49,50)]
+```
+
+```{r}
+comm_sales_gen <- rbind(comm_sales_gen_2021,comm_sales_gen_2020,comm_sales_gen_2019,comm_sales_gen_2018,comm_sales_gen_2017)
+
+rownames(comm_sales_gen)<-c()
+
+write.csv(comm_sales_gen,"./Data/comm_sales_gen.csv",row.names = F)
+```
+
+# 연령대별
+
+```{r}
+comm_sales_age_2021 <- comm_sales_2021[,c(1,2,6,8,51:56)]
+comm_sales_age_2020 <- comm_sales_2020[,c(1,2,6,8,51:56)]
+comm_sales_age_2019 <- comm_sales_2019[,c(1,2,6,8,51:56)]
+comm_sales_age_2018 <- comm_sales_2018[,c(1,2,6,8,51:56)]
+comm_sales_age_2017 <- comm_sales_2017[,c(1,2,6,8,51:56)]
+```
+
+```{r}
+comm_sales_age <- rbind(comm_sales_age_2021,comm_sales_age_2020,comm_sales_age_2019,comm_sales_age_2018,comm_sales_age_2017)
+
+rownames(comm_sales_age)<-c()
+
+write.csv(comm_sales_age,"./Data/comm_sales_age.csv",row.names = F)
+```
+
+# 시간대별
+
+```{r}
+comm_sales_time_2021 <- comm_sales_2021[,c(1,2,6,8,43:48)]
+comm_sales_time_2020 <- comm_sales_2020[,c(1,2,6,8,43:48)]
+comm_sales_time_2019 <- comm_sales_2019[,c(1,2,6,8,43:48)]
+comm_sales_time_2018 <- comm_sales_2018[,c(1,2,6,8,43:48)]
+comm_sales_time_2017 <- comm_sales_2017[,c(1,2,6,8,43:48)]
+```
+
+```{r}
+comm_sales_time <- rbind(comm_sales_time_2021,comm_sales_time_2020,comm_sales_time_2019,comm_sales_time_2018,comm_sales_time_2017)
+
+rownames(comm_sales_time)<-c()
+
+write.csv(comm_sales_time,"./Data/comm_sales_time.csv",row.names = F)
+```

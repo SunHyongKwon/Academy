@@ -1,0 +1,40 @@
+```{r}
+a<-c(1,2,3,4,5,6,7,8,9,10,11,12)
+b<-c(2,3,4,5,6)
+c<-c("a","b","c")
+d<-c("Abc","순형","Csdf","강감찬")
+e<-rep(1:3,4)
+f<-rep(c("aasdf","asdb","12c"),4)
+
+max(d)
+mean(d)
+sd(d)
+max(d)
+median(d)
+union(a,c)
+intersect(a,b)
+setdiff(b,a)
+sort(e)
+sort(f)
+unique(e)
+length(grep("a",f))
+rownames(iris)
+colnames(iris)
+irisTem <- iris
+irisTem
+rownames(irisTem) <- seq(1,300,2)
+iris
+colnames(irisTem) <- 1:5
+irisTem
+t(irisTem)
+
+irisTemp<-head(iris)
+
+irisTemp$test = 1:5
+
+apply(irisTemp[,1:4], 2, sum)
+
+subset(a, a>= 3)
+
+sum(is.na(iris))
+```

@@ -1,0 +1,183 @@
+#### tip : 인구 수가 줄어드는 것 일까? 출생수가 줄어드는 것 일까?
+
+```{r}
+library(stringr)
+library(dplyr)
+library(plotrix)
+```
+
+# 데이터 정제
+
+## 어떤 데이터인지 확인하기
+
+```{r}
+# 1번 파일
+# 1960 - 2020 까지의 인구 수 / 남자 인구 수 / 여자 인구 수
+no_1 <- read.csv("./Data/population_1960_2020.csv")
+no_1
+
+tail(no_1)
+# 2번 파일
+# 광역시도 별 인구수
+no_2 <- read.csv("./Data/metro_total_1992_2020.csv")
+no_2
+tail(no_2)
+```
+
+## 과연 두 데이터셋 의 총 인구 수가 같을까??
+
+같은 년도인데 총 인구 수가 다르다.
+
+추세만 비교해 보는 것이 좋을 것 같다.
+
+```{r}
+no_3 <- subset(no_1,년도 >= 1992 & 년도 <= 2020)
+no_3
+no_2
+no_3$총인구 == no_2$전국
+```
+
+## 1번 데이터 프레임 정제 하기
+
+### 년도와 성별을 행으로 가지고 인구수를 년도와 인구수를 가지는 데이터프레임으로 바꾸기
+
+#### 총 인구수 날리기
+
+```{r}
+no_1<-no_1[,-2]
+no_1
+
+```
+
+#### 남자 여자 돌리기 / 년도 붙여주기
+
+```{r}
+
+test<-data.frame(년도 = rep(1960,2) , 성별 = c("남자","여자"),t(no_1[1,2:3]))
+colnames(test) <- c("년도","성별","인구수")
+
+for (i in 2:nrow(no_1)) {
+  test2<-data.frame(년도 = rep((1959+i),2) , 성별 = c("남자","여자"),인구수=t(no_1[i,2:3]))
+  colnames(test2) <- c("년도","성별","인구수")
+  test<-rbind(test,test2)
+}
+
+rownames(test)<-c()
+test
+```
+
+### [완료] 1번 데이터 정제 완료 \<- pop_gender
+
+```{r}
+pop_gender <- test
+pop_gender
+```
+
+## 2번 데이터 정제하기
+
+### 열을 년도 광역시도 인구수 로 데이터프레임 바꾸기
+
+#### 총 인구수 날리기
+
+```{r}
+no_2<-no_2[,-2]
+no_2
+```
+
+#### 하나 돌려보기
+
+```{r}
+test3<-data.frame(1992,colnames(no_2)[-1],t(no_2[1,2:18]))
+colnames(test3)<-c("년도","광역시도","인구수")
+test3
+```
+
+#### for 문으로 붙이기
+
+```{r}
+for (i in 2:nrow(no_2) ) {
+  
+  test4 <- data.frame(1991+i,colnames(no_2)[-1],t(no_2[i,2:18]))
+  colnames(test4) <- c("년도","광역시도","인구수")
+  test3 <- rbind(test3,test4)
+  
+}
+
+test3
+```
+
+#### 0 인 값 빼기 통계에서 빼기
+
+```{r}
+test3<-subset(test3,인구수 != 0)
+rownames(test3)<-c()
+test3
+```
+
+### [완료] 2번 데이터 셋
+
+```{r}
+pop_reg<-test3
+pop_reg
+```
+
+# 인구 밀도 분석을 위해 지역별 면적 2번 데이터 셋에 넣기
+
+## 지역별 면적 데이터 셋 정제하기
+
+### 파일 불러오기
+
+```{r}
+no_4<-read.csv("./Data/지역별_면적_20221202135848.csv")
+no_4
+
+```
+
+### 광역시도 / 연도 / 면적 으로 데이터 프레임 만들기
+
+```{r}
+no_4[1,2:16]
+t(no_4[1,2:16])
+
+test<-data.frame(rep(no_4[1,1],15),2006:2020,t(no_4[1,2:16]))
+colnames(test)<-c("광역시도","연도","면적")
+test
+```
+
+```{r}
+for (i in 2:17) {
+  test2<-data.frame(rep(no_4[i,1],15),2006:2020,t(no_4[i,2:16]))
+  colnames(test2)<-c("광역시도","연도","면적")
+  test<-rbind(test,test2)
+}
+
+rownames(test)<-c()
+test
+```
+
+### [완료] 3번 데이터 프레임 (reg_area)
+
+```{r}
+test<-subset(test,is.na(test$면적) == FALSE)
+reg_area<-test
+reg_area
+```
+
+# 데이터 정제 완료 데이터 프레임 모아놓기
+
+```{r}
+pop_gender
+pop_reg
+reg_area
+```
+
+## pop_reg 와 reg_area 합쳐서 pop_density_reg 만들기
+
+```{r}
+pop_density_reg<-merge(pop_reg,reg_area,by.x = c("광역시도","년도"), by.y = c("광역시도","연도"))
+pop_density_reg$인구밀도 = pop_density_reg$인구수 / pop_density_reg$면적
+```
+
+```{r}
+pop_density_reg
+```

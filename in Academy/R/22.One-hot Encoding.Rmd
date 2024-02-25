@@ -1,0 +1,156 @@
+# Mushroom을 One-hot Encoding으로 Machine Learning 사용하기
+
+```{r}
+mr <- read.csv("./Data/mushroom.csv", header = F)
+head(mr)
+```
+
+```{r}
+mr[,1] <- as.factor(mr[,1])
+```
+
+```{r}
+for (i in 2:23) {
+  mr[,i] <- as.factor(mr[,i])
+  mr[,i] <- as.numeric(mr[,i])
+}
+```
+
+```{r}
+mr
+```
+
+# One-hot Encoding
+
+-   각 컬럼별 unique 한 값 몇개인지
+
+```{r}
+unique_leng_by_col <- c()
+for (i in 2:23) {
+  unique_leng_by_col<-append(unique_leng_by_col ,length(unique(mr[,i])))
+}
+
+as.data.frame(t(unique_leng_by_col))
+apply(as.data.frame(t(unique_leng_by_col)), 1, sum)
+```
+
+-   별도의 DataFrame 생성
+
+```{r}
+mr2 <- data.frame(V1 = mr$V1)
+```
+
+-   하나 가지고 연습해보기
+
+```{r}
+sort(unique(mr$V2))
+```
+
+-   전체에 해보기
+
+```{r}
+for (i in 2:23) {
+  for (j in sort(unique(mr[,i]))) {
+    mr2 <- cbind(mr2,mr[,i] == j)
+  }
+}
+
+mr2
+```
+
+-   column name 만들어주기
+
+```{r}
+col_name <- c()
+for (i in 2:23) {
+  col_name <- append(col_name,paste("V",i,"-",sort(unique(mr[,i])),sep = ""))
+}
+
+col_name
+```
+
+```{r}
+colnames(mr2) <- c("V1",col_name)
+
+head(mr2)
+```
+
+-   정렬시키기
+
+```{r}
+library(dplyr)
+
+mr2 <- arrange(mr2 , )
+```
+
+# Column 이름과 One-hot Encoding 한번에 처리하기
+
+```{r}
+mr3 <- data.frame(V1 = mr$V1)
+head(mr3)
+```
+
+```{r}
+count = 2
+for (i in 2:23) {
+  for (j in sort(unique(mr[,i]))) {
+    mr3 <- cbind(mr3, mr[,i] == j)
+    colnames(mr3)[count] <- paste("V",i,"_",j,sep = "")
+    count = count + 1
+  }
+}
+
+mr3
+```
+
+```{r}
+mr3 <- arrange(mr3, V1)
+mr3
+```
+
+# Machine Learning 돌려보기
+
+```{r}
+set.seed(1234)
+
+samp <- createDataPartition(mr3$V1 , p = 0.7 , list = F)
+data.train <- mr3[samp,]
+data.test <- mr3[-samp,]
+
+x <- subset(data.test , select = -V1)
+y <- data.test$V1
+```
+
+-   RandomForest model
+
+```{r}
+model.rf <- randomForest(V1 ~ . , data=data.train , ntree = 100 )
+pred.rf <- predict(model.rf , x)
+```
+
+-   인공신경망 model
+
+```{r}
+model.nnet <- nnet(V1 ~ . , data=data.train , size = 3)
+pred.nnet <- predict(model.nnet , x , type = "class")
+```
+
+-   SVM model
+
+```{r}
+model.svm <- svm(V1 ~ . , data = data.train)
+pred.svm <- predict(model.svm , x)
+```
+
+-   예측률 확인 및 오답노트 보기
+
+```{r}
+mean(pred.nnet == y) * 100
+table(pred.nnet , y)
+
+mean(pred.rf == y) * 100
+table(pred.rf , y)
+
+mean(pred.svm == y) * 100
+table(pred.svm , y)
+```

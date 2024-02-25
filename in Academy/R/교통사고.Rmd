@@ -1,0 +1,138 @@
+```{r}
+library(stringr)
+library(dplyr)
+library(plotrix)
+```
+
+# txt 파일 데이터 정제하기
+
+## txt 불러오기
+
+```{r}
+trafficAcc<-read.table("./Data/trafficAccident_2011_2019.txt",header = T)
+
+rownames(trafficAcc)<-c()
+
+head(trafficAcc)
+tail(trafficAcc)
+
+sum(is.na(trafficAcc))
+
+```
+
+## "," , "-" 없애기 / 1월 \~ 12월 numeric으로 바꾸기
+
+```{r}
+for (i in 1:ncol(trafficAcc)) {
+    trafficAcc[,i] = str_replace_all(trafficAcc[,i],",","")
+    trafficAcc[,i] = str_replace_all(trafficAcc[,i],"-","0")
+}
+
+for (i in 4:ncol(trafficAcc)) {
+  trafficAcc[,i] = as.numeric(trafficAcc[,i])
+}
+trafficAcc[,1] = as.numeric(trafficAcc[,1])
+trafficAcc <- trafficAcc[,-c(4)]
+str(trafficAcc)
+trafficAcc
+
+tail(trafficAcc)
+```
+
+## colnames 바꾸기
+
+```{r}
+calendar<-vector()
+for (i in 1:12) {
+  calendar<-append(calendar,paste(i,"월"))
+}
+
+colnames(trafficAcc)[-(1:3)]<-calendar
+trafficAcc
+nrow(trafficAcc)
+```
+
+## 합계 빼기
+
+```{r}
+trafficAcc <- subset(trafficAcc, 자치구별 != "합계")
+trafficAcc
+rownames(trafficAcc)<-c()
+head(trafficAcc)
+nrow(trafficAcc)
+```
+
+## 하나 돌려보기
+
+```{r}
+test<-as.data.frame(t(trafficAcc[1:3,3:15]))
+colnames(test)<-test[1,]
+
+test<-test[-1,]
+rownames(test)<-c()
+test<-data.frame(년도=trafficAcc[1,1],월=1:12,자치구명=trafficAcc[1,2],test)
+
+test
+head(test)
+tail(test)
+```
+
+## for문으로 싹다 돌려버리기
+
+```{r}
+for (i in seq(4,nrow(trafficAcc),3)) {
+  
+    test2<-as.data.frame(t(trafficAcc[i:(i+2),3:15]))
+    colnames(test2)<-test2[1,]
+    
+    test2<-test2[-1,]
+    test2<-data.frame(년도=trafficAcc[i,1],월=1:12,자치구명=trafficAcc[i,2],test2)
+
+    test<-rbind(test,test2)
+    rownames(test)<-c()
+      
+}
+
+test
+```
+
+## 정제 끝
+
+```{r}
+trafficAcc <- test
+
+trafficAcc
+```
+
+## 산점도 뽑아보기
+
+```{r}
+trafficAcc
+par(family="AppleGothic")
+
+for (i in 4:ncol(trafficAcc)) {
+ trafficAcc[,i] = as.numeric(trafficAcc[,i])
+}
+
+length(unique(trafficAcc$발생건수))
+length(unique(trafficAcc$사망자수))
+length(unique(trafficAcc$부상자수))
+length(unique(trafficAcc$기간))
+
+plot(trafficAcc$부상자수~trafficAcc$발생건수)
+plot(trafficAcc$사망자수~trafficAcc$발생건수)
+```
+
+## 원본 데이터와 비교해보기
+
+```{r}
+copy<-read.csv("./Data/newSeoul2019.csv")
+copy
+
+tail(copy)
+tail(trafficAcc)
+length(unique(copy$발생건수))
+
+setdiff(copy,trafficAcc)
+
+```

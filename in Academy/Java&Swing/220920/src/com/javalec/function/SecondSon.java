@@ -1,0 +1,14 @@
+package com.javalec.function;
+
+public class SecondSon {
+
+	public void takeChoco() {
+		Static.choco -= 1;
+		
+		if(Static.choco < 0) {
+			System.out.println("둘째는 초코파이 먹고 싶어요!");
+		}else {
+			System.out.println("둘째는 맛있게 먹었어요.");
+		}
+	}
+}

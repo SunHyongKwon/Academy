@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "143101887901",
+    "project_id": "sun-hyong-kwon-project-1234123",
+    "storage_bucket": "sun-hyong-kwon-project-1234123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:143101887901:android:b0c3a9e610bd1e2439db74",
+        "android_client_info": {
+          "package_name": "com.example.cg_firebase_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "143101887901-todqcfugsl34hebcpvnuq3orptg5jp6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB02P8NSmOPzRAr-2ZJjWHJfcEArTOU6qo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "143101887901-todqcfugsl34hebcpvnuq3orptg5jp6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

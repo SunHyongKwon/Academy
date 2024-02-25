@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Map view configurations" minToolsVersion="14.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="GpsMap" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Uk7-TD-peu">
+                                <rect key="frame" x="16" y="59" width="361" height="32"/>
+                                <segments>
+                                    <segment title="현재위치"/>
+                                    <segment title="둘리뮤지엄"/>
+                                    <segment title="서대문형무소역사관"/>
+                                </segments>
+                                <connections>
+                                    <action selector="locationGo:" destination="BYZ-38-t0r" eventType="valueChanged" id="VPz-lf-Les"/>
+                                </connections>
+                            </segmentedControl>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EU5-Qu-eWx">
+                                <rect key="frame" x="16" y="106" width="361" height="635"/>
+                                <standardMapConfiguration key="preferredConfiguration"/>
+                            </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FUM-Bp-dXa">
+                                <rect key="frame" x="16" y="757" width="361" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yS4-ZM-eMe">
+                                <rect key="frame" x="16" y="786" width="361" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="EU5-Qu-eWx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="1EE-oL-oZD"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yS4-ZM-eMe" secondAttribute="trailing" constant="16" id="1js-ff-wqc"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Uk7-TD-peu" secondAttribute="trailing" constant="16" id="9g9-46-san"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="EU5-Qu-eWx" secondAttribute="bottom" constant="77" id="IGd-CX-8W2"/>
+                            <constraint firstItem="yS4-ZM-eMe" firstAttribute="top" secondItem="FUM-Bp-dXa" secondAttribute="bottom" constant="8" symbolic="YES" id="Q6l-Zp-8Ec"/>
+                            <constraint firstItem="yS4-ZM-eMe" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="aZc-sg-LEI"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="EU5-Qu-eWx" secondAttribute="trailing" constant="16" id="d1b-fi-Rab"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="FUM-Bp-dXa" secondAttribute="trailing" constant="16" id="ekS-9w-QUv"/>
+                            <constraint firstItem="EU5-Qu-eWx" firstAttribute="top" secondItem="Uk7-TD-peu" secondAttribute="bottom" constant="16" id="fWp-Ze-eMK"/>
+                            <constraint firstItem="FUM-Bp-dXa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="fnC-Bt-Nbq"/>
+                            <constraint firstItem="Uk7-TD-peu" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="shG-oF-nIE"/>
+                            <constraint firstItem="FUM-Bp-dXa" firstAttribute="top" secondItem="EU5-Qu-eWx" secondAttribute="bottom" constant="16" id="ud0-kH-eue"/>
+                            <constraint firstItem="Uk7-TD-peu" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="xVG-22-cfa"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="addr1" destination="FUM-Bp-dXa" id="RTB-21-r3x"/>
+                        <outlet property="addr2" destination="yS4-ZM-eMe" id="zw3-Xi-2kE"/>
+                        <outlet property="locationGo" destination="Uk7-TD-peu" id="cLR-U5-k35"/>
+                        <outlet property="myMap" destination="EU5-Qu-eWx" id="az3-zd-8KW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="130.53435114503816" y="-27.464788732394368"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

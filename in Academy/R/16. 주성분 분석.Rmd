@@ -1,0 +1,133 @@
+# 주성분 분석
+
+: 서로 연관되어 있는 변수들이 관측 되었을 때, 이 변수들이 전체적으로 가지고 있는 정보를 최대한 확보하면서 적은 수의 변수를 생성하는 방법
+
+## [방법 1] 설문지를 이용한 주성분 분석
+
+```{r}
+pasta <- read.table("./Data/pasta.txt")
+pasta
+```
+
+1.  다중 공선성 확인 : 컬럼은 다른데 성격이 똑같은 것이 있는지 판단 해야 된다.
+    -   너무 상관이 높아서 마치 쌍둥이 데이터 인 것 찾기
+    -   상관계수를 확인하여 1에 가까운 것은
+
+```{r}
+cor(pasta)
+
+```
+
+2.  표준화 : 표준 정규분포로 만들어주는 것을 말함.
+    -   summary( data명) 을 통해서 만약 모든 컬럼들 중에 서로의 범위를 연결시켜주는 컬럼이 존재하지 않고, 모든 컬럼들이 다 떨어져 있다면 이를 표준화해줘야 한다.
+
+```{r}
+pasta1 <- scale(pasta)
+summary(pasta1)
+summary(pasta)
+apply(pasta1, 2, sd)
+cor(pasta1)
+pasta1
+```
+
+```{r}
+p1<-prcomp(pasta, scale = T)
+biplot(p1)
+```
+
+### \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
+
+### [예제 1] 라면 주성분 분석
+
+```{r}
+ramyeon <- read.table("./Data/라면.txt", header = T)
+ramyeon
+rownames(ramyeon) <- ramyeon[,1]
+ramyeon
+ramyeon<-ramyeon[,2:4]
+```
+
+```{r}
+summary(ramyeon)
+cor(ramyeon)
+```
+
+```{r}
+ramyeon1<-scale(ramyeon)
+ramyeon1
+```
+
+```{r}
+par(family = "AppleGothic")
+p1<-prcomp(ramyeon, scale = T)
+biplot(p1)
+```
+
+```{r}
+summary(pasta)
+summary(ramyeon)
+summary(ramyeon1)
+```
+
+## \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
+
+## [방법 2] 일반적인 데이터를 이용하여 주성분 분석
+
+### USArrests
+
+이 데이터 세트에는 1973년 미국 50개주에서 각각 10만명당 폭행, 살인 강간으로 체포된 통계
+
+도시지역에 살고 있는 인구 비율도 있음
+
+```{r}
+head(USArrests)
+```
+
+```{r}
+summary(USArrests)
+```
+
+```{r}
+# 관계 파악
+cor(USArrests)
+```
+
+```{r}
+# 주성분 분석
+result <- princomp(USArrests, cor = T)
+
+# 계수 값들이 나온다.
+# Cumulative Proportion 이 데이터를 대표할 수 있는 확률을 말한다.
+# Standard deviation 표준 편차
+summary(result)
+```
+
+```{r}
+biplot(result)
+```
+
+```{r}
+# comp 1 -> 1성분 / comp 2 -> 2성분 ... 
+# comp1 과 comp2를 합친다는 것은 수식을 두개 합친다는 말이다. 
+# loadings를 통해서 계수를 알 수 있다. 
+result$loadings
+```
+
+```{r}
+# 1주성분으로 새로운 변수값 생성
+score <- 0.536*USArrests$Murder + 0.583 * USArrests$Assault + 0.278 * USArrests$UrbanPop + 0.543 * USArrests$Rape
+score
+```
+
+```{r}
+# states와 주성분으로 데이터 프레임 만들기
+Result <- data.frame(states = rownames(USArrests), score = score)
+Result
+```
+
+```{r}
+library(dplyr)
+
+head(arrange(Result, desc (score)),10)
+tail(arrange(Result, desc (score)),10)
+```

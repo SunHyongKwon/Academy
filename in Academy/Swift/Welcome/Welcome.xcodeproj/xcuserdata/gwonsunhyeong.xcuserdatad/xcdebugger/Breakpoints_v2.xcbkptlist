@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "6BB8EAF6-C98B-459B-B19F-A7D77AE24476"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "45239672-93B6-455B-9878-7005F8BEF789"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Welcome/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "ViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "45239672-93B6-455B-9878-7005F8BEF789 - 1fa523ec43f5f0a1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.lblWelcome.getter : Swift.Optional&lt;__C.UILabel&gt;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  uuid = "45239672-93B6-455B-9878-7005F8BEF789 - ad2e3fdba144a9b5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.lblWelcome.setter : Swift.Optional&lt;__C.UILabel&gt;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "108">
+               </Location>
+               <Location
+                  uuid = "45239672-93B6-455B-9878-7005F8BEF789 - 90572ccce6a86ee4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.lblWelcome.modify : Swift.Optional&lt;__C.UILabel&gt;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "45239672-93B6-455B-9878-7005F8BEF789 - 5ca817d2d8f29745"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.lblWelcome.modify : Swift.Optional&lt;__C.UILabel&gt; with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "28">
+               </Location>
+               <Location
+                  uuid = "45239672-93B6-455B-9878-7005F8BEF789 - eb7107baae520e9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; Welcome.ViewController"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "132">
+               </Location>
+               <Location
+                  uuid = "45239672-93B6-455B-9878-7005F8BEF789 - c791d06d5325fce7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;Welcome.ViewController&gt;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "108">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4AC03A8B-2EDD-4318-AA9F-C8395A35062F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Welcome/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "14"
+            endingLineNumber = "14"
+            landmarkName = "ViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "4AC03A8B-2EDD-4318-AA9F-C8395A35062F - f946ef9cfc621424"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.tfname.getter : Swift.Optional&lt;__C.UITextField&gt;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  uuid = "4AC03A8B-2EDD-4318-AA9F-C8395A35062F - 6e31d182b6913d30"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.tfname.setter : Swift.Optional&lt;__C.UITextField&gt;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "108">
+               </Location>
+               <Location
+                  uuid = "4AC03A8B-2EDD-4318-AA9F-C8395A35062F - d664f0ad2811be61"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.tfname.modify : Swift.Optional&lt;__C.UITextField&gt;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "4AC03A8B-2EDD-4318-AA9F-C8395A35062F - b9a1fb878173065b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.tfname.modify : Swift.Optional&lt;__C.UITextField&gt; with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "28">
+               </Location>
+               <Location
+                  uuid = "4AC03A8B-2EDD-4318-AA9F-C8395A35062F - eb7107baae520ce"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; Welcome.ViewController"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  uuid = "4AC03A8B-2EDD-4318-AA9F-C8395A35062F - c791d06d5325fcc0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Welcome.ViewController.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;Welcome.ViewController&gt;"
+                  moduleName = "Welcome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kwonsoonhyong/Desktop/Academy/after%20Academy/Swift/Welcome/Welcome/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
